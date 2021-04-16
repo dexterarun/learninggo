@@ -117,4 +117,10 @@ func main() {
 	slice2 = append(slice2, 4, 5, 6)
 	fmt.Println(slice2) //prints [1 2 3 4 5 6]
 
+	slice3 := slice[1:]
+	slice4 := slice[:2]
+	slice5 := slice[1:2]
+
+	fmt.Println(slice3, slice4, slice5)
+
 }
