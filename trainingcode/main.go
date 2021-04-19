@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 
+	"github.com/pluralsight/webservice/controllers"
 	"github.com/pluralsight/webservice/models"
 	//add more packages on new lines in here as shown below. no commas needed.
 	//"os"
@@ -208,7 +210,8 @@ func main() {
 	fmt.Println(usr3) // {2 Wonder Cats}
 	//Therefore in Go, always terminate multi-line entries with a comma to make it consistent with the rest of the elements.
 
-	// MODULES and PACKAGES
+	// MODULES and PACKAGES + functions code starting point here
+	// ===========================================================
 	// *There are Go modules and within a module there are packages. Packages are discrete units of code that are associated with some sort of a concept within a module.
 	// In a go project, create a directory and that declares a package for us.
 	// If you need to interact with the package, the name of the folder matters.
@@ -218,4 +221,28 @@ func main() {
 	//create variable of type user which is defined in module package user.go
 	u := models.User{ID: 1, FirstName: "Lee", LastName: "Bruce"}
 	fmt.Println(u)
+
+	port := 3000
+	port, err := startWebServer(port, 2) //port and err are two return values from this function
+	// or
+	// _, err := startWebServer(port, 2) //here '_' is a write-only variable that DOESN'T have to be used so is ignored.
+	fmt.Println(port, err)
+
+	//Web services start here
+	controllers.RegisterControllers()
+	http.ListenAndServe(":3000", nil) //nil indicates to go that  we'll use the default  servemux  multiplexer.
+}
+
+// func <functionname>(parameters list) <return type eg: bool or error data type; two return values int and error> { function body}
+// you can have multiple return values but they must be encased in round braces.
+func startWebServer(port int, numberOfRetries int) (int, error) {
+	// or
+	//func startWebServer(port, numberOfRetries int) {
+	fmt.Println("Starting web server...")
+	// do some stuff
+	fmt.Println("Web server started on port...", port)
+	fmt.Println("Number of  retries", numberOfRetries)
+	//return nil // if return type is error, can return nil if nothing happens.
+	//return errors.New("Something went wrong")
+	return port, nil
 }
