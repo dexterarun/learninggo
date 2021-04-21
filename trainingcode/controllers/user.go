@@ -56,7 +56,7 @@ func (uc *userController) post(w http.ResponseWriter, r *http.Request) {
 	encodeResponseAsJSON(u, w)
 }
 
-func (uc *userCuserController) put(id int, w http.ResponseWriter, r *http.Request) {
+func (uc *userController) put(id int, w http.ResponseWriter, r *http.Request) {
 	u, err := uc.parseRequest(r)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -69,7 +69,7 @@ func (uc *userCuserController) put(id int, w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	u, err := models.UpdateUser(u)
+	u, err = models.UpdateUser(u)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
@@ -78,8 +78,7 @@ func (uc *userCuserController) put(id int, w http.ResponseWriter, r *http.Reques
 	encodeResponseAsJSON(u, w)
 }
 
-func (uc *userCuserController) delete(id int, w http.ResponseWriter) {
-{
+func (uc *userController) delete(id int, w http.ResponseWriter) {
 	err := models.RemoveUserById(id)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -99,16 +98,12 @@ func (uc *userController) parseRequest(r *http.Request) (models.User, error) {
 	return u, nil
 }
 
-
-
 //constructor function - start with new then name of controller. that's go convention.
 func newUserController() *userController {
 	//with structs we can take address of struct object immediately after init else this would be ringing alarm bells. but ok with structs.
 	// also note that usercontroller here is a local variable for which we return the address out of the function. In c++ this would be a worry as anything could overwrite that memory after losing scope of method.
 	// but in go, that variable is promoted up to whatever scope it needs to be at for its use.
-	return &userController {
+	return &userController{
 		userIDPattern: regexp.MustCompile(`^/users/(\d+)/?`),
 	}
 }
-
-
