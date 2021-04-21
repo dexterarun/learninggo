@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 
+	"github.com/pluralsight/webservice/controllers"
 	"github.com/pluralsight/webservice/models"
 	//add more packages on new lines in here as shown below. no commas needed.
 	//"os"
@@ -349,8 +351,9 @@ func main() {
 	// ================================
 	// Web services start here
 	// ================================
-	//controllers.RegisterControllers()
-	//http.ListenAndServe(":3000", nil) //nil indicates to go that  we'll use the default  servemux  multiplexer.
+	controllers.RegisterControllers()
+	http.ListenAndServe(":3000", nil)
+	//nil indicates to go that  we'll use the default  servemux  multiplexer.
 	// ===============================================================
 
 }
