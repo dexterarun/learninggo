@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"regexp"
+	"strconv"
 
 	"github.com/pluralsight/webservice/models"
 )
@@ -18,12 +19,42 @@ type userController struct {
 // here uc is bound to the user controller.
 // ServeHTTP is our method name and it requires two parameters - responsewriter and request object.
 func (uc userController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello from User Controller!"))
+	//w.Write([]byte("Hello from User Controller!"))
 	// byte slice is an alias for a string. conversely a string is an alias for a byte slice. above is syntax for string to byteslice.
 	//go lang dox:
 	// type Handler interface {
 	//ServeHTTP(ResponseWriter, *Request)
 	// }
+
+		if r.URL.Path == "/users" {
+			switch r.Method {
+			case http.MethodGet : uc.getAll(w, r)
+			case http.MethodPost : uc.post(w, r)
+			default: w.WriteHeader(http.StatusNotImplemented)
+			}
+		} else {
+				matches := uc.userIDPattern.FindAllStringSubmatch(r.URL.Path)
+				if len(matches) == 0 {
+					w.WriteHeader(http.StatusNotFound)
+				}
+				id,err := strconv.Atoi(matches[1])  //subgroup match containing the id value
+				if err != nil {
+					w.WriteHeader(http.StatusNotFound)
+				}
+				switch r.Method {
+				case http.MethodGet:
+					uc.get(id, w)
+				case http.MethodPut:
+					uc.put(id, w, r)
+				case http.MethodDelete:
+					uc.delete(id, w)
+				default: 
+				w.WriteHeader(http.StatusNotFound)
+				}
+
+			}
+		}
+
 }
 
 func (uc *userController) get(id int, w http.ResponseWriter) {
