@@ -349,7 +349,7 @@ func main() {
 	fmt.Println(port, err)
 
 	// ================================
-	// Web services start here
+	// Web services start here - ignore all methods above if focus is only  the web service.
 	// ================================
 	controllers.RegisterControllers()
 	http.ListenAndServe(":3000", nil)
