@@ -2,9 +2,7 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 
-	"github.com/pluralsight/webservice/controllers"
 	"github.com/pluralsight/webservice/models"
 	//add more packages on new lines in here as shown below. no commas needed.
 	//"os"
@@ -27,6 +25,11 @@ const (
 
 	// note that iota resets in between new constant blocks i.e. every new constant block.
 )
+
+//type for demoing switch  statement.
+type HTTPRequest struct {
+	Method string
+}
 
 func main() {
 
@@ -222,15 +225,134 @@ func main() {
 	u := models.User{ID: 1, FirstName: "Lee", LastName: "Bruce"}
 	fmt.Println(u)
 
+	// Branching and looping.
+	//=========================
+	// branching  with panics, if statements and  switches
+	//  anytime you loop in go you'll use a  for loop.
+
+	//option 1 - loop till condition
+	var loopctr int
+	for loopctr < 5 {
+		println(loopctr)
+		loopctr++
+		if loopctr == 3 {
+			continue //causes control to go back to start of loop body  rather than any of the code further below.
+		}
+		println("continuing...")
+	}
+	/*  above code  prints
+	0
+	continuing...
+	1
+	continuing...
+	2
+	3
+	continuing...
+	4
+	*/
+
+	// option 2: loop till condition with post clause
+	for i := 0; i < 5; i++ {
+		println(i)
+	}
+
+	//option 3  - infinite  loop
+	//ugly way
+
+	// for ; ; {
+	// if i == 5 {
+	// break
+	// }
+	// println(i)
+	// i++
+	// }
+
+	// good way
+
+	// for {
+	// if i == 5 {
+	// break
+	// }
+	// println(i)
+	// i++
+	// }
+
+	// Looping over collections such as arrays, slices and maps.
+	// =========================================================
+	slice6 := []int{1, 2, 3}
+	for i, v := range slice6 { // i is indexer, v is value. think of a[i] where i is indexer and a[i] is value.
+		println(i, v)
+	}
+	// prints
+	//  0 1
+	//	1 2
+	//	2 3
+
+	wellKnownPorts := map[string]int{"http": 80, "https": 443, "localsite": 8080}
+	for i, v := range wellKnownPorts {
+		println(i, v)
+	}
+	// can remove ,v and all occurrences of v from above if you only want to work with indexes.
+	// conversely if we want only values and need tto use just keys, use _,v := range wwellKnownPorts etc and use just v within scope.
+
+	// for i:=0; i< len(slice); i++ {
+	// println(slice[i])
+	// }
+
+	// IF Sttatements
+	// =============================
+	user1 := LocalUser{
+		ID:        1,
+		FirstName: "Arthur",
+		LastName:  "Dent",
+	}
+
+	user2 := LocalUser{
+		ID:        2,
+		FirstName: "George",
+		LastName:  "Lucas",
+	}
+	if user1.ID != user2.ID {
+		println("Not the same user!")
+	} else { //can also use: else if user1.ID == user2.ID
+		println("same user!")
+	}
+
+	// switch statements
+	// ==================
+	req := HTTPRequest{Method: "GET"}
+	switch req.Method {
+	case "GET":
+		println("this is a get request")
+		//fallthrough - this keyword causes fall-through to case below the current one after current one is executed.
+	case "DELETE":
+		println("this is a delete request")
+	case "POST":
+		println("this is a post request")
+	case "PUT":
+		println("this is a put request")
+	default:
+		println("Unhandled request")
+	}
+
 	port := 3000
 	port, err := startWebServer(port, 2) //port and err are two return values from this function
 	// or
 	// _, err := startWebServer(port, 2) //here '_' is a write-only variable that DOESN'T have to be used so is ignored.
+
+	// Panic
+	//====================================
+	//panic("Something didn't work at all")
+
 	fmt.Println(port, err)
 
-	//Web services start here
-	controllers.RegisterControllers()
-	http.ListenAndServe(":3000", nil) //nil indicates to go that  we'll use the default  servemux  multiplexer.
+	// ================================
+	// Web services start here
+	// ================================
+	//controllers.RegisterControllers()
+	//http.ListenAndServe(":3000", nil) //nil indicates to go that  we'll use the default  servemux  multiplexer.
+	// ===============================================================
+
 }
 
 // func <functionname>(parameters list) <return type eg: bool or error data type; two return values int and error> { function body}
